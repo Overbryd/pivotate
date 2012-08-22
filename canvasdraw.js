@@ -17,8 +17,8 @@ var canvas, //canvas element.
   imgd, //image data object.
   data = [], //array of image pixel data.
   toolbarHeight = 0, //toolbar offset height (pixels).
-  penSize = 1, //pen width (pixels).
-  roundedVel = 1,
+  penSize = 2, //pen width (pixels).
+  roundedVel = 2,
   timerStart = 0,
   r = 255, //red stroke
   g = 0, //green stroke
@@ -78,7 +78,6 @@ function onMouseMove(e) {
 }
   
 function onMouseUp(e) {
-    
   endDraw(e.clientX, e.clientY);
   canvas.removeEventListener('mousemove', onMouseMove, false);
   canvas.removeEventListener('mouseup', onMouseUp, false);    
@@ -148,12 +147,11 @@ function endDraw(x,y) {
     strokePickerEnabled = false;
     fillPickerEnabled = false;
     pickerEnabled = false;
-  }   
+  }
 }
 
     
 function clearCanvas() {
-    
   if (!confirm("Clear the canvas?")) {
     return;
   }
@@ -164,7 +162,7 @@ function clearCanvas() {
   originalImageData = ctx.getImageData(0, 0, window.innerWidth, (window.innerHeight - toolbarHeight));
   ctx.putImageData(originalImageData, 0, 0);
 }
-    
+
 function saveCanvas() {
     
   //save our canvas to a data URL and open in a new browser window

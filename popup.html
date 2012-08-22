@@ -4,133 +4,128 @@
   <meta charset="utf-8">
   <title>Pivotal Submit</title>
   <style>
-    body {
-      font-family: sans-serif;
-      width: 300px;
-      padding: 8px;
+    * {
+      box-sizing: border-box;
     }
-    h1 {font-size: 1.2em; margin: 0; padding:0; display: inline;}
-    label {width: 63px; display: block; margin-top: 10px;}
-    label:after { content:":";}
-    input, textarea {width: 284px;}
-    textarea {height: 50px;}
-    p, form {padding: 0; margin:0;}
-    small {font-size: 60%;}
-    .hidden {display: none;}
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 125% !important;
+      width: 300px;
+      margin: 0; padding: 0; border: 0;
+      background: #E9E7DD url(https://www.pivotaltracker.com/images/v7/application/stories_view/backgrounds/story_details_bg1.png);
+    }
+    #header {
+      color: #fff;
+      background: #256188;
+      padding: 8px;
+      border-bottom: 2px solid #bbb;
+    }
+    #header h1 {
+      text-shadow: rgba(32, 32, 32, 0.3) 2px 1px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-weight: normal;
+      margin: 0;
+      font-size: 1em;
+    }
+    form#story {
+      padding: 8px 8px 0 8px;
+    }
+    form#story label {
+      display: block;
+      font-weight: bold;
+      line-height: 16px;
+      font-size: 11px;
+      padding-top: 7px;
+      color: black;
+      text-shadow: 0 1px 1px white;
+      text-transform: uppercase;
+    }
+    form#story textarea {
+      height: 72px;
+    }
+    form#story input {
+      height: 18px;
+    }
+    form#story input,
+    form#story textarea {
+      width: 100%;
+      display: block;
+      padding: 2px 1px 1px 4px;
+      line-height: 18px;
+      border-radius: 3px;
+      border: 1px solid #ADB0B7;
+      box-shadow: 0 1px 0 white;
+      font-size: 12px;
+    }
+    button.cancel {
+      float: right;
+      color: #666;
+      background-color: transparent;
+    }
+    button.submit {
+      color: #fff;
+      background-color: #3D5A7D;
+      background: -webkit-gradient(linear, left top, left bottom, from(#3D5A7D), to(#2C496B));
+    }
+    button {
+      border-style: none;
+      border-color: #333;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    #screenshot {
+      width: 284px;
+    }
+    .controls {
+      margin: 4px;
+      padding: 4px;
+      background: #DFDCD0;
+      border-radius: 3px;
+    }
+    #busy {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+    }
+    #busy img {
+      width: 80px; height: 80px;
+      margin: 0 auto;
+    }
+    #busy h1 {
+      text-align: center;
+      color: #E7CE00;
+      margin: 0;
+      padding: 0;
+    }
   </style>
-  <script src="jquery.js" type="text/javascript"></script>
+  <script src="jquery-1.8.js"></script>
+  <script src="tracker.js"></script>
+  <script src="popup.js"></script>
 </head>
 <body>
-  <h1>Add story to Pivotal</h1>
-  <form id="#pivotate">
-    <label for="title">Title</label>
-    <input id="title" name="title"></input>
+
+  <div id="header">
+    <h1>Create Story</h1>
+  </div>
+  <form id="story">
+    <div>
+      <input id="title" placeholder="Enter a speaking title..." />
+    </div>
 
     <label for="description">Description</label>
-    <textarea id="description"></textarea>
+    <textarea id="description" placeholder="Please describe what should be going on."></textarea>
 
-    <label for="story_type">Story&nbsp;Type</label><select id="story_type" name="story_type">
-    <option value="feature">Feature</option>
-    <option value="bug">Bug</option>
-    <option value="chore">Chore</option>
-    <option value="release">Release</option>
-    </select>
-    <br/><br/>
-
-    <textarea id="imagedata" class="hidden"></textarea>
+    <label>Screenshot</label>
+    <img id="screenshot" />
   </form>
-  <div>
-    <button id="action">Create Story</button><img class="spinner" style="display:none" src='spinner.gif'/><span class="status"></span>
+  <div class="controls">
+    <button class="submit">Create Story</button>
+    <button class="cancel">Cancel</button>
   </div>
-  <small>
-    <b>l</b> - draw line, 
-    <b>c</b> - draw oval,
-    <b>r</b> - draw rectangle
-    <br/>
-    <b>&#8984;+z</b> - undo
-  </small>
+
 </body>
-<script>
-  //Get the background page
-  var bgpage = chrome.extension.getBackgroundPage();
-
-  //save data to the background page incase popup closed
-  var saveData = function() {
-    bgpage.setData({
-      title: $('#title').val(),
-      description: $('#description').val(),
-    });
-  }
-
-  //load data from background page when opening popup
-  var loadData = function() {
-    var data = bgpage.getData();
-    $('#title').val(data.title);
-    $('#description').val(data.description);
-  }
-
-  //clear data from local and background
-  var clearData = function() {
-    bgpage.setData({
-      title: '',
-      description: ''
-    });
-    loadData();
-  }
-  
-  var init = function() {
-    //Initiate the canvas overlay
-    chrome.tabs.executeScript(null, {file: "canvasdraw.js"});
-    //Add border to the canvas
-    chrome.tabs.insertCSS(null, {code: "canvas {border: 1px red solid; position: fixed; top: 0; left: 0}"});
-    //Load data into the popup
-    loadData();
-
-    $('#title').focus();
-  }
-
-  $('#action').click(function() {
-    var url = '';
-    var button = $(this);
-
-    chrome.tabs.getSelected(null, function(t) {url = t.url;});
-    button.attr('disabled', true);
-    button.text('Saving...');
-
-    chrome.tabs.captureVisibleTab(null, { quality: 75}, function(imagedata) {
-      bgpage.sendData({
-          pivotalkey: localStorage["pivotalkey"],
-          pivotalprojectid: localStorage["pivotalprojectid"],
-          title: $('#title').val(),
-          description: url+' \n '+$('#description').val(),
-          story_type: $('#story_type').val(),
-          imagedata: imagedata
-        }, function(status, success) {
-          button.removeAttr('disabled');
-          $('.spinner').hide();
-          $('.status').html(status);
-          if (success) {
-            setTimeout(function() {
-              $('.status').html('');
-              chrome.tabs.executeScript(null, {file: "canvasdestroy.js"});
-              window.close();
-            }, 3000);
-            clearData();
-          }
-        }
-      );
-      
-      $('.spinner').show();
-      var saveInterval = setInterval(function() {
-        callback = bgpage.getPopupCallback();
-        if (callback) {
-          callback();
-          clear(setInterval);
-        }
-      }, 1000);
-    });
-  });
-  window.addEventListener("load", init, true);
-  window.addEventListener("unload", saveData, true);
-</script>
 </html>

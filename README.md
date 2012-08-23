@@ -1,12 +1,12 @@
 # Pivotaltracker Chrome Extension
 
-#### [Download Pivotaltracker Extension from the Chrome Webstore](http://chrome.google.com/webstore/detail/)
+#### [Download Pivotaltracker Extension from the Chrome Webstore](https://chrome.google.com/webstore/detail/hmpippenodeobkffhjipofilmamaiicd)
 
-A handy extension that enables you to submit new stories right from your browser.
+A handy extension that enables you to submit new bugs right from your browser.
 
 You can also attach a screenshot of the current website to the story. This is especially useful for reporting bugs. The extensions also allows you to annotate and draw on the screenshot before submitting.
 
-[Watch the Demo video](http://screenr.com/)
+[Watch the Demo video](http://www.screenr.com/L9Y8)
 
 ## Contributing / Hacking
 

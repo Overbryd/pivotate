@@ -10,6 +10,8 @@ var Pivotaltracker = function(project_id, apikey) {
   }
 
   this.data_uri_to_blob = function(data_uri) {
+    // Code stolen from blueimp/JavaScript-Canvas-to-Blob
+    // https://github.com/blueimp/JavaScript-Canvas-to-Blob/blob/master/canvas-to-blob.js
     var byteString,
         arrayBuffer,
         intArray,
